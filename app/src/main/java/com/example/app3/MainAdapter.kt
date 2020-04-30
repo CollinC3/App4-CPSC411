@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.book_info.view.*
 
-class MainAdapter(val listBooks: Array<BookList>): RecyclerView.Adapter<CustomViewHolder>() {
+class MainAdapter(val listBooks: List<BookList>): RecyclerView.Adapter<CustomViewHolder>() {
     override fun getItemCount(): Int {
         return listBooks.count()
     }

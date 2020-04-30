@@ -5,7 +5,9 @@ import android.os.PersistableBundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -16,12 +18,12 @@ class PostRequest : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.post_request)
-        val listBooks: Array<BookList> = intent.getSerializableExtra("recyclerView") as Array<BookList>
+        val listBooks: ArrayList<BookList> = intent.getSerializableExtra("recyclerView") as ArrayList<BookList>
         val submitButton: Button = findViewById(R.id.submit)
         submitButton.setOnClickListener{ submit(listBooks) }
     }
 
-    private fun submit(listBooks: Array<BookList>) {
+    private fun submit(listBooks: ArrayList<BookList>) {
         //put the post into to api in here
         val title: EditText = findViewById(R.id.title)
         val author: EditText = findViewById(R.id.author)
@@ -52,9 +54,16 @@ class PostRequest : AppCompatActivity() {
                 println(response)
             }
         })
-        MainAdapter(listBooks).notifyItemInserted(MainAdapter(listBooks).itemCount)
+        val size: Int = listBooks.size
+        val years: String = year.text.toString()
+        listBooks.add(BookList(size - 1, years.toInt(), author.toString(), title.toString(), sentence.toString()))
+        MainAdapter(listBooks).notifyItemInserted(size)
+        MainAdapter(listBooks).notifyItemRangeChanged(size, listBooks.size)
+        MainAdapter(listBooks).notifyDataSetChanged()
         finish()
     }
 }
+
+//val id: Int, val published: Int, val author: String, val title: String, val first_sentence: String
 
 data class Book(val published: Int, val author: String, val title: String, val first_sentence: String)

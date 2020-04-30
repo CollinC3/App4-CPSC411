@@ -1,5 +1,6 @@
 package com.example.app3
 
+import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,7 +19,7 @@ import java.io.Serializable
 
 class MainActivity : AppCompatActivity(){
 
-    var listBooks: Array<BookList> = emptyArray()
+    var listBooks: ArrayList<BookList> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(){
 
 
 
-    fun apiClient() {
+    private fun apiClient() {
         val url: String = "http://10.0.2.2:7000/api/v1/resources/books/all"
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
@@ -55,7 +56,8 @@ class MainActivity : AppCompatActivity(){
 
                     val gson = GsonBuilder().create()
 
-                    listBooks = gson.fromJson(body, Array<BookList>::class.java)
+                    val itemType = object : TypeToken<ArrayList<BookList>>() {}.type
+                    listBooks = gson.fromJson<ArrayList<BookList>>(body, itemType)
                     runOnUiThread {
                         booksView.adapter = MainAdapter(listBooks)
                     }
